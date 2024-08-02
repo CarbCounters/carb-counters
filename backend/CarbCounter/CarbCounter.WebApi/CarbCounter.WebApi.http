@@ -1,0 +1,6 @@
+@CarbCounter.WebApi_HostAddress = http://localhost:5041
+
+GET {{CarbCounter.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
