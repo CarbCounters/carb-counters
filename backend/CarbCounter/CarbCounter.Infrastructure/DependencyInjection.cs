@@ -11,7 +11,6 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSqlServer(configuration.GetConnectionString("sql-server"));
-
         services.AddIdentity();
 
         return services;
@@ -24,7 +23,7 @@ public static class DependencyInjection
             throw new Exception("SQL connection string does not exist.");
         }
 
-        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString: ""));
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString: connectionString));
 
         return services;
     }

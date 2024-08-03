@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Identity;
 using CarbCounter.Application.Common.Requests;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using CarbCounter.Core.Entities;
 using CarbCounter.Core.Common.Interfaces;
@@ -16,6 +15,7 @@ public class CreateAccountCommand
     public required string Surname { get; init; }
     public required string Username { get; init; }
     public required string Email { get; init; }
+    public required string PhoneNumber { get; init; }
     public required string Password { get; init; }
 }
 
@@ -30,20 +30,17 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
 
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly IConfiguration _configuration;
     private readonly ILogger<CreateAccountCommandHandler> _logger;
     private readonly IDateTimeService _dateTimeService;
 
     public CreateAccountCommandHandler(
         UserManager<AppUser> userManager,
         RoleManager<IdentityRole> roleManager, 
-        IConfiguration configuration,
         ILogger<CreateAccountCommandHandler> logger,
         IDateTimeService dateTimeService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
-        _configuration = configuration;
         _logger = logger;
         _dateTimeService = dateTimeService;
     }
@@ -60,12 +57,14 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
         AppUser user = new()
         {
             Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
             UserName = request.Username,
             Forename = request.Forename,
             Surname = request.Surname,
             SecurityStamp = Guid.NewGuid().ToString(),
             CreatedAt = _dateTimeService.Now,
-            UserType = EnUserType.User
+            UserType = EnUserType.User,
+            RegistrationStatus = EnRegistrationStatus.AccountCreated,
         };
 
         IdentityResult creationResult = await _userManager.CreateAsync(user, request.Password);
@@ -94,6 +93,6 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
 
         await _userManager.AddToRoleAsync(user, s_roleMappings[user.UserType]);
 
-        return new(HttpStatusCode.OK, "Created user account");
+        return new(HttpStatusCode.OK, user.Id);
     }
 }
