@@ -17,4 +17,5 @@ public class AppUser : IdentityUser, ITimeStamped
     public required EnRegistrationStatus RegistrationStatus { get; set; } = EnRegistrationStatus.AccountCreated;
     public int RegistrationStatusId => (int)RegistrationStatus;
     public DateTime? LastLogon { get; set; } = null;
+    public bool IsSoftDeleted { get; set; } = false;
 }

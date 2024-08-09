@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CarbCounter.Infrastructure.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateUserAccountsMigration : Migration
+    public partial class AddUserTableMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,6 +37,7 @@ namespace CarbCounter.Infrastructure.Persistance.Migrations
                     UserType = table.Column<int>(type: "int", nullable: false),
                     RegistrationStatus = table.Column<int>(type: "int", nullable: false),
                     LastLogon = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsSoftDeleted = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

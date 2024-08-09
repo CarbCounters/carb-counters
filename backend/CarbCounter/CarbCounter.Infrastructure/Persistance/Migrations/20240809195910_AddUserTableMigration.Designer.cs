@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarbCounter.Infrastructure.Persistance.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240803130805_CreateUserAccountsMigration")]
-    partial class CreateUserAccountsMigration
+    [Migration("20240809195910_AddUserTableMigration")]
+    partial class AddUserTableMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,9 @@ namespace CarbCounter.Infrastructure.Persistance.Migrations
                     b.Property<string>("Forename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSoftDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastLogon")
                         .HasColumnType("datetime2");

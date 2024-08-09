@@ -48,6 +48,9 @@ namespace CarbCounter.Infrastructure.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsSoftDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastLogon")
                         .HasColumnType("datetime2");
 
