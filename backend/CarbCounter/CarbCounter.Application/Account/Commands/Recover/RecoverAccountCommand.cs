@@ -1,27 +1,27 @@
 ﻿using System.Net;
-using System.Text.Json.Serialization;
 using CarbCounter.Application.Common.Requests;
 using CarbCounter.Core.Entities;
 using CarbCounter.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
-namespace CarbCounter.Application.Account.Commands.SoftDelete;
+namespace CarbCounter.Application.Account.Commands.Recover;
 
-public record SoftDeleteAccountCommand
+public record RecoverAccountCommand
 {
     [JsonIgnore] public string Id { get; init; } = null!;
 }
 
-public class SoftDeleteAccountCommandHandler : IRequestHandler<SoftDeleteAccountCommand>
+public class RecoverAccountCommandHandler : IRequestHandler<RecoverAccountCommand>
 {
     private readonly ApplicationDbContext _dbContext;
 
-    public SoftDeleteAccountCommandHandler(ApplicationDbContext dbContext)
+    public RecoverAccountCommandHandler(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<AppResponse> Handle(SoftDeleteAccountCommand request, CancellationToken cancellationToken)
+    public async Task<AppResponse> Handle(RecoverAccountCommand request, CancellationToken cancellationToken)
     {
         AppUser? appUser =
             await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
@@ -31,13 +31,13 @@ public class SoftDeleteAccountCommandHandler : IRequestHandler<SoftDeleteAccount
             return new(HttpStatusCode.NotFound, message: $"The user with the Id {request.Id} does not exist.");
         }
 
-        if (appUser.IsSoftDeleted)
+        if (!appUser.IsSoftDeleted)
         {
             return new(HttpStatusCode.BadRequest,
-                message: $"The user with the Id {request.Id} is already soft deleted.");
+                message: $"The user with the Id {request.Id} is not soft deleted.");
         }
 
-        appUser.IsSoftDeleted = true;
+        appUser.IsSoftDeleted = false;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
